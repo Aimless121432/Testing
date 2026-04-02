@@ -21,4 +21,3 @@ addLayer("tree-tab", {
     previousTab: "",
     leftTab: true,
 })
-addLayer("Achievements", { rightTab: true, })

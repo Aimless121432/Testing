@@ -46,6 +46,7 @@ function getPointGen() {
 	if(hasUpgrade("T", 11)) gain = gain.times(2)
 	if (hasUpgrade('T', 12)) gain = gain.times(upgradeEffect('T', 12))
 	if (hasUpgrade('V', 11)) gain = gain.times(2)
+	
 		return gain
 }
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values

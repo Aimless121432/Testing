@@ -126,6 +126,25 @@ addLayer("V", {
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         cost: new Decimal(5),
     },
+13: {
+    title: "Upgrade 3",
+    description: "Unlocks challenge",
+    onPurchase() {player.challenges;.11.unlocked = true},
+    cost: new Decimal(10),
 },
-
+    },
+   challenges: {
+    11: {
+        name: "Sparring",
+        challengeDescription: "Do a sparring match",
+        canComplete: function() {return player.points.gte(500)},
+        goalDescription: "Get 500 points.",
+        rewardDescription: "Make point gain based on victor points.",
+        effect() {
+            return player[this.layer].points.add(1).pow(0.5)
+        },
+    
+   }
+       
+}
 });
