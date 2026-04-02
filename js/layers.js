@@ -1,3 +1,25 @@
+addLayer("a", {
+    name: "Achievements", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "<img src='resources/trophy.png' style='width:calc(80%);height:calc(80%);margin:10%'></img>", // This appears on the layer's node. Default is the id with the first letter capitalized 
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+       
+    }
+    },
+    nodeStyle: {
+        background: "linear-gradient(45deg, blue, purple)",
+        "background-origin": "border-box",
+    },
+    color: "blue",
+    row: "side", // Row the layer is in on the tree (0 is the first row)
+    tooltip: "Achievements", // Row the layer is in on the tree (0 is the first row)
+    
+    layerShown() {
+        return true
+    }
+})
+
 addLayer("T", {
     name: "Titan",
     symbol: "T",
@@ -14,9 +36,11 @@ addLayer("T", {
     type: "normal",
     exponent: 0.5,
     gainMult() {
-        mult = new Decimal(1)
+         let mult = new Decimal(1)
+        if (hasUpgrade('T', 13)) mult = mult.times(upgradeEffect('T', 13))
         return mult
     },
+
     gainExp() {
         return new Decimal(1)
     },
@@ -33,14 +57,27 @@ addLayer("T", {
             11: {
                 title: "Upgrade 1",
                 description: "Make point gain faster.",
-                cost: new Decimal(10),
+                cost: new Decimal(1),
             },
             12: {
-                title: "Upgrade 2",
-                description: "Make titan point gain faster.",
-                cost: new Decimal(15),
-        },
-
+                  effect() {
+        return player[this.layer].points.add(1).pow(0.5)
+    },
+    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        
+    title: "Upgrade 2",
+    description: "Make point gain based on titan points.",
+    cost: new Decimal(5)
+},
+13: {
+    effect() {
+        return player.points.add(1).pow(0.15)
+    },
+    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+                title: "Upgrade 3",
+                description: "points boost titan points.",
+                cost: new Decimal(10),
+            },
     },
 
     }
