@@ -25,11 +25,19 @@ addLayer("T", {
         {key: "t", description: "T: Reset for titan points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-    upgrades: {
-        1: {
-            title: "Upgrade 1",
-            description: "Make point gain faster.",
-            cost: new Decimal(1),
+       upgrades: {
+            11: {
+                title: "Upgrade 1",
+                description: "Make point gain faster.",
+                cost: new Decimal(10),
+            },
+            12: {
+                title: "Upgrade 2",
+                description: "Make titan point gain faster.",
+                cost: new Decimal(15),
         },
+
     },
-});
+
+    }
+);
