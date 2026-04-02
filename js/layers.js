@@ -82,3 +82,50 @@ addLayer("T", {
 
     }
 );
+addLayer("V", {
+    name: "Victor Points",
+    symbol: "V",
+    position: 1,
+    startData() { return { 
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "#a80e0e",
+    requires: new Decimal(50),
+    resource: "Victor points",
+    baseResource: "Titan points",
+    baseAmount() {return player.T.points},
+    type: "normal",
+    exponent: 0.5,
+    gainMult() {
+            let mult = new Decimal(1)
+        if (hasUpgrade('V', 12)) mult = mult.times(upgradeEffect('V', 12))
+        return mult
+    },
+
+    gainExp() {
+        return new Decimal(1)
+    },
+    row: 1,
+    hotkeys: [
+        {key: "v", description: "V: Reset for victor points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    upgrades: {
+        11: {
+            title: "Boxing Day ",
+            description: "Make point gain faster.",
+            cost: new Decimal(1),
+    },
+    12: {
+        title: "Practice",
+        description: "Make titan point gain based on victor points.",
+        effect() {
+        return player[this.layer].points.add(1).pow(0.5)
+    },
+    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        cost: new Decimal(5),
+    },
+},
+
+});
