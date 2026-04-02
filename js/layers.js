@@ -21,11 +21,15 @@ addLayer("T", {
         return new Decimal(1)
     },
     row: 0,
+   
     hotkeys: [
         {key: "t", description: "T: Reset for titan points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    
     layerShown(){return true},
-       upgrades: {
+      
+    
+    upgrades: {
             11: {
                 title: "Upgrade 1",
                 description: "Make point gain faster.",
