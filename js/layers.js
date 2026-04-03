@@ -140,11 +140,16 @@ addLayer("V", {
         canComplete: function() {return player.points.gte(500)},
         goalDescription: "Get 500 points.",
         rewardDescription: "Make point gain based on victor points.",
+        Inchallenge() {return true},
         effect() {
-            return player[this.layer].points.add(1).pow(0.5)
-        },
-    
-   }
-       
+        return player[this.layer].points.add(1).pow(0.5)
+    },
+    effectDisplay() { return format(challengeEffect(this.layer, this.id))+"x" },
+unlocked() {
+        return (hasUpgrade('V', 13))
 }
+},
+   
+}
+       
 });
