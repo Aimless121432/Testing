@@ -38,7 +38,8 @@ addLayer("T", {
     gainMult() {
          let mult = new Decimal(1)
         if (hasUpgrade('T', 13)) mult = mult.times(upgradeEffect('T', 13))
-        return mult
+        if (hasUpgrade('V', 12)) mult = mult.times(2)
+            return mult
     },
 
     gainExp() {
@@ -119,18 +120,14 @@ addLayer("V", {
     },
     12: {
         title: "Practice",
-        description: "Make titan point gain based on victor points.",
-        effect() {
-        return player[this.layer].points.add(1).pow(0.5)
-    },
-    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        description: "5x Basic point gain.",
         cost: new Decimal(5),
     },
 13: {
     title: "Upgrade 3",
     description: "Unlocks challenge",
     onPurchase() {player.challenges;.11.unlocked = true},
-    cost: new Decimal(10),
+    cost: new Decimal(3),
 },
     },
    challenges: {
