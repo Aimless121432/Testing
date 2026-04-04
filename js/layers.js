@@ -28,6 +28,7 @@ addLayer("T", {
         unlocked: true,
         points: new Decimal(0),
     }},
+
     color: "#4BDC13",
     requires: new Decimal(10),
     resource: "titan points",
@@ -38,7 +39,7 @@ addLayer("T", {
     gainMult() {
          let mult = new Decimal(1)
         if (hasUpgrade('T', 13)) mult = mult.times(upgradeEffect('T', 13))
-        if (hasUpgrade('V', 12)) mult = mult.times(2)
+         if (hasUpgrade('V', 12)) mult = mult.times(2)
             return mult
     },
 
@@ -50,11 +51,8 @@ addLayer("T", {
     hotkeys: [
         {key: "t", description: "T: Reset for titan points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    
-    layerShown(){return true},
-      
-    
-    upgrades: {
+     
+        upgrades: {
             11: {
                 title: "Upgrade 1",
                 description: "Make point gain faster.",
@@ -79,17 +77,21 @@ addLayer("T", {
                 description: "points boost titan points.",
                 cost: new Decimal(10),
             },
-    },
+    14: {
+        title: "Upgrade 4",
+        description: "Unlocks a new layer and 1.5x point gain.",
+        cost: new Decimal(25),
+        },
 
     }
-);
+});
 addLayer("V", {
     name: "Victor Points",
     symbol: "V",
     position: 1,
-    startData() { return { 
+    startData() { return {
         unlocked: true,
-        points: new Decimal(0),
+        points: new Decimal(1),
     }},
     color: "#a80e0e",
     requires: new Decimal(50),
@@ -99,9 +101,9 @@ addLayer("V", {
     type: "normal",
     exponent: 0.5,
     gainMult() {
-            let mult = new Decimal(1)
-        if (hasUpgrade('V', 12)) mult = mult.times(upgradeEffect('V', 12))
-        return mult
+    let mult = new Decimal(1)
+
+    return mult
     },
 
     gainExp() {
@@ -111,7 +113,10 @@ addLayer("V", {
     hotkeys: [
         {key: "v", description: "V: Reset for victor points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return true},
+    layerShown(){ 
+    return hasUpgrade('T', 14) || (player.V.unlocked), visible = true
+    }, 
+    
     upgrades: {
         11: {
             title: "Boxing Day ",
@@ -120,7 +125,7 @@ addLayer("V", {
     },
     12: {
         title: "Practice",
-        description: "5x Basic point gain.",
+        description: "2x Titan point gain.", 
         cost: new Decimal(5),
     },
 13: {
@@ -136,10 +141,10 @@ addLayer("V", {
         challengeDescription: "Do a sparring match",
         canComplete: function() {return player.points.gte(500)},
         goalDescription: "Get 500 points.",
-        rewardDescription: "Make point gain based on victor points.",
+        rewardDescription: "Make point gain based on victor points and unlock a new milestone.",
         Inchallenge() {return true},
         effect() {
-        return player[this.layer].points.add(1).pow(0.5)
+        return player[this.layer].points.add(1).pow(0.75)
     },
     effectDisplay() { return format(challengeEffect(this.layer, this.id))+"x" },
 unlocked() {
@@ -147,6 +152,14 @@ unlocked() {
 }
 },
    
-}
-       
+},
+milestones: {
+    0: {
+        requirementDescription: "10 Victor points",
+        effectDescription: "Keep 1-4 titan upgrades on victor reset.",
+        done() {
+            return player[this.layer].points.gte(10)
+        },
+    },
+},
 });
