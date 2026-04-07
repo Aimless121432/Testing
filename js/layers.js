@@ -39,7 +39,8 @@ addLayer("T", {
     gainMult() {
          let mult = new Decimal(1)
         if (hasUpgrade('T', 13)) mult = mult.times(upgradeEffect('T', 13))
-         if (hasUpgrade('V', 12)) mult = mult.times(2)
+        if (hasUpgrade('V', 12)) mult = mult.times(2)
+        if (hasUpgrade('V', 14)) mult = mult.times(2)
             return mult
     },
 
@@ -52,7 +53,26 @@ addLayer("T", {
         {key: "t", description: "T: Reset for titan points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
      
-        upgrades: {
+    doReset(resettingLayer) {
+    // Stage 1, almost always needed, makes resetting this layer not delete your progress
+    if (layers[resettingLayer].row <= this.row) return;
+
+    // Stage 2, track which specific subfeatures you want to keep, e.g. Upgrade 11, Challenge 32, Buyable 12
+    let keptUpgrades = [];
+    if (hasUpgrade(this.layer, 11,12,13,14)) keptUpgrades.push(11,12,13,14);
+
+    // Stage 3, track which main features you want to keep - all upgrades, total points, specific toggles, etc.
+    let keep = [];
+    
+
+    // Stage 4, do the actual data reset
+    layerDataReset(this.layer, keep);
+
+    // Stage 5, add back in the specific subfeatures you saved earlier
+    player[this.layer].upgrades.push(...keptUpgrades);
+  }, 
+    
+    upgrades: {
             11: {
                 title: "Upgrade 1",
                 description: "Make point gain faster.",
@@ -117,25 +137,30 @@ addLayer("V", {
     return hasUpgrade('T', 14) || (player.V.unlocked), visible = true
     }, 
     
-    upgrades: {
-        11: {
-            title: "Boxing Day ",
-            description: "Make point gain faster.",
-            cost: new Decimal(1),
+upgrades: {
+    11: {
+        title: "Boxing Day ",
+        description: "Make point gain faster.",
+        cost: new Decimal(1),
     },
     12: {
         title: "Practice",
         description: "2x Titan point gain.", 
         cost: new Decimal(5),
     },
-13: {
-    title: "Upgrade 3",
-    description: "Unlocks challenge",
-    onPurchase() {player.challenges;.11.unlocked = true},
-    cost: new Decimal(3),
-},
+    13: {
+        title: "Upgrade 3",
+        description: "Unlocks challenge",
+        onPurchase() {player.V.challenges[11].unlocked = true},
+        cost: new Decimal(3),
     },
-   challenges: {
+    14: {
+        title: "ACL tear",
+        description: ".25x point gain, but 2x titan point gain.",
+        cost: new Decimal(10),
+    },
+},
+challenges: {
     11: {
         name: "Sparring",
         challengeDescription: "Do a sparring match",
@@ -149,17 +174,18 @@ addLayer("V", {
     effectDisplay() { return format(challengeEffect(this.layer, this.id))+"x" },
 unlocked() {
         return (hasUpgrade('V', 13))
-}
+},
 },
    
 },
-milestones: {
-    0: {
-        requirementDescription: "10 Victor points",
-        effectDescription: "Keep 1-4 titan upgrades on victor reset.",
-        done() {
-            return player[this.layer].points.gte(10)
+    
+    milestones: {
+        0: {
+            requirementDescription: "10 Victor points",
+            effectDescription: "Keep 1-4 titan upgrades on victor reset.",
+            done() {
+                return player[this.layer].points.gte(10)
+            },
         },
     },
-},
 });
