@@ -102,16 +102,34 @@ addLayer("T", {
         description: "Unlocks a new layer and 1.5x point gain.",
         cost: new Decimal(25),
         },
-
-    }
+    
+        15: {
+        title: "Upgrade 5",
+        description: "2x point gain.",
+        cost: new Decimal(10000),
+            unlocked() {
+        return hasMilestone('V', 1)
+    },
+},
+    16: { 
+        title: "Upgrade 6",
+        description: "1.5x Victor point gain.",
+        cost: new Decimal(1e5),
+        unlocked() {
+        return hasMilestone('V', 1)
+    },
+},
+},
 });
+
 addLayer("V", {
     name: "Victor Points",
     symbol: "V",
     position: 1,
     startData() { return {
-        unlocked: true,
-        points: new Decimal(1),
+    unlocked: false,  
+    points: new Decimal(0),
+    
     }},
     color: "#a80e0e",
     requires: new Decimal(50),
@@ -122,7 +140,8 @@ addLayer("V", {
     exponent: 0.5,
     gainMult() {
     let mult = new Decimal(1)
-
+if (hasUpgrade('T', 16)) mult = mult.times(2)
+    
     return mult
     },
 
@@ -137,7 +156,13 @@ addLayer("V", {
     return hasUpgrade('T', 14) || (player.V.unlocked), visible = true
     }, 
     
-upgrades: {
+layerShown(){
+        let visible = false
+        if (hasUpgrade('T', 14) || player.V.unlocked) visible = true
+       return visible
+     },
+    
+     upgrades: {
     11: {
         title: "Boxing Day ",
         description: "Make point gain faster.",
@@ -187,5 +212,15 @@ unlocked() {
                 return player[this.layer].points.gte(10)
             },
         },
+   1: {
+            requirementDescription: "100 Victor points",
+            effectDescription: "Unlock new Titan upgrades",
+            done() {
+                return player[this.layer].points.gte(100)
+            },
     },
+},
 });
+
+
+
